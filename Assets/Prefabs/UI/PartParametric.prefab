@@ -31,8 +31,9 @@ GameObject:
   - 114: {fileID: 11499582}
   - 225: {fileID: 22513288}
   - 114: {fileID: 11467294}
+  - 114: {fileID: 11498314}
   m_Layer: 5
-  m_Name: EquationPart
+  m_Name: PartParametric
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,7 +85,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: X
+  m_Text: 't
+
+'
 --- !u!114 &11467294
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -111,6 +114,17 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: .5}
   m_EffectDistance: {x: .300000012, y: -.300000012}
   m_UseGraphicAlpha: 1
+--- !u!114 &11498314
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 166460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f511c526e2e4d4479113916a0aec8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11499582
 MonoBehaviour:
   m_ObjectHideFlags: 1
