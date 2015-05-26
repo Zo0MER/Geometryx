@@ -18,7 +18,6 @@ public class EquationPanel : MonoBehaviour
     public void AddSlot()
     {
         GameObject newSlot = Instantiate(slotPrefab);
-        newSlot.GetComponent<EquationSlot>().index = transform.childCount;
         newSlot.transform.SetParent(transform);
         slots.Add(newSlot.GetComponent<EquationSlot>());
     }
@@ -35,6 +34,21 @@ public class EquationPanel : MonoBehaviour
         }
 
         UpdateFormula();
+    }
+
+    public void RemoveSlot()
+    {
+        List<EquationSlot> freeSlots = FreeSlots();
+        if (freeSlots.Count > 1)
+        {
+            freeSlots.RemoveAt(freeSlots.Count - 1);
+            foreach (var slot in freeSlots)
+            {
+                slots.Remove(slot);
+                Destroy(slot.gameObject);
+            }
+        }
+        
     }
 
     public void UpdateFormula()
@@ -58,20 +72,26 @@ public class EquationPanel : MonoBehaviour
 
     public void MoveItemsToRight(EquationSlot startSlot)
     {
-        int startSlotPos = startSlot.index;
+        int startSlotPos = slots.IndexOf(startSlot);
         for (int i = startSlotPos; i < slots.Count - 1; i++)
         {
-            slots[i].item.GetComponent<EquationPiece>().PutOnSlot(slots[i+1].transform);
+            if (slots[i].item)
+            {
+                slots[i].item.GetComponent<EquationPiece>().PutOnSlot(slots[i + 1].transform);
+            }
         }
 
     }
 
     public void MoveItemsToLeft(EquationSlot startSlot)
     {
-        int startSlotPos = startSlot.index;
+        int startSlotPos = slots.IndexOf(startSlot);
         for (int i = startSlotPos; i < slots.Count - 1; i++)
         {
-            slots[i+1].item.GetComponent<EquationPiece>().PutOnSlot(slots[i].transform);
+            if (slots[i + 1].item)
+            {
+                slots[i + 1].item.GetComponent<EquationPiece>().PutOnSlot(slots[i].transform);
+            }
         }
     }
 }

@@ -18,8 +18,6 @@ public class EquationSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
         }
     }
 
-    public int index = 0;
-
     private EquationPanel panel;
     
     void Start()
@@ -41,6 +39,13 @@ public class EquationSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
         {
             panel.MoveItemsToLeft(this);
         }
+
+        if (item == null && DragHandler.itemBeginDraged != null)
+        {
+            panel.RemoveSlot();
+        }
+
+        panel.UpdateFormula();
     }
 
 

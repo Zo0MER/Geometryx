@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -14,6 +15,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         startPosition = transform.position;
         startParent = transform.parent.gameObject;
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+        transform.SetParent(FindObjectOfType<Canvas>().transform);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -25,10 +27,10 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         itemBeginDraged = null;
         GetComponent<CanvasGroup>().blocksRaycasts = true;
-        if (startParent == transform.parent.gameObject)
+        if (!transform.parent.gameObject.GetComponent<GridLayoutGroup>())
         {
             transform.position = startPosition;
-
+            transform.SetParent(startParent.transform);
         }
     }
 
