@@ -8,12 +8,10 @@ public class PiecesStock : MonoBehaviour, IDropHandler
 {
 
     public GameObject piecePrefab;
-    private EquationPanel panel;
 
-    void Start()
-    {
-        panel = transform.parent.gameObject.GetComponent<EquationPanel>();
-
+	// Use this for initialization
+	void Start ()
+	{
 	    foreach(var symbol in FindObjectOfType<LevelState>().mixedFormula)
 	    {
 	        AddPiece(symbol.ToString());
