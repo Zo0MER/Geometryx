@@ -59,7 +59,7 @@ public class EquationPanel : MonoBehaviour
         {
             if (slot.item)
             {
-                formula += slot.item.GetComponentInChildren<Text>().text;   
+                formula += slot.item.GetComponent<EquationPiece>().Value;   
             }
         }
         FindObjectOfType<GraphicLineGenerator>().formula = formula;

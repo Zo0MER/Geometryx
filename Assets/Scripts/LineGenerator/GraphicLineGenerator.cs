@@ -22,7 +22,6 @@ public class GraphicLineGenerator : MonoBehaviour {
             if (prevf != formula)
             {
                 points = vector.getVect(formula);
-
                 lineRenderer = GetComponent<LineRenderer>();
                 GenerateMesh(new List<Vector2>(points));
             }

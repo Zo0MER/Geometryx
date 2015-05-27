@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
   - 120: {fileID: 12000000}
-  - 68: {fileID: 6843346}
+  - 68: {fileID: 6873070}
   m_Layer: 0
   m_Name: GraphicLine
   m_TagString: GraphicLine
@@ -30,7 +30,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!68 &6843346
+--- !u!68 &6873070
 EdgeCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
