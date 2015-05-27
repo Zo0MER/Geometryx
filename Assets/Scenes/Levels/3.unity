@@ -220,6 +220,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.size
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: m_LocalPosition.x
       value: 4.4221034
@@ -254,7 +258,39 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula
-      value: -x*x/8+4
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[0]
+      value: '-'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[1]
+      value: x
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[2]
+      value: '*'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[3]
+      value: x
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[4]
+      value: /
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[5]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[6]
+      value: +
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
+      propertyPath: formula.Array.data[7]
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}

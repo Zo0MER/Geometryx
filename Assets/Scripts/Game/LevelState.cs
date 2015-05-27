@@ -1,30 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-public class LevelState : MonoBehaviour {
-    public string formula = "";
-	public char[] mixedFormula;
+public class LevelState : MonoBehaviour
+{
+    public string[] formula;
 
-	void Awake () {
+    public string[] mixedFormula;
+
+void Awake () {
         mixedFormula = ShuffleString(formula);
-		while (formula.ToCharArray() == mixedFormula) {
+		while (formula.Equals(mixedFormula)) {
             mixedFormula = ShuffleString(formula);
 		}
 	}
 
-	char[] ShuffleString(string str)
+	string[] ShuffleString(string[] str)
 	{
-		char[] mixedArray = str.ToCharArray();
-		int n = mixedArray.Length;  
-		while (n > 1) {  
-			n--;  
-			int k = Random.Range(0, n + 1); 
-			Random.Range(0, n + 1);
-			char value = mixedArray[k];  
-			mixedArray[k] = mixedArray[n];  
-			mixedArray[n] = value;  
-		}  
-		return mixedArray;
+        System.Random random = new System.Random();
+	    str = str.OrderBy(x => random.Next()).ToArray();
+        return str;
 	}
 }

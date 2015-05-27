@@ -286,6 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   piecePrefab: {fileID: 166460, guid: 23f15823742d1624b91bdb6c37786f2e, type: 2}
+  parametricPrefab: {fileID: 166460, guid: f75cd1535590090418f919c8f10d7527, type: 2}
 --- !u!114 &11450532
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -303,7 +303,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.size
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: m_LocalPosition.x
@@ -339,19 +339,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[0]
-      value: 5
+      value: sin
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[1]
-      value: 1
+      value: (
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[2]
-      value: x
+      value: t
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[3]
-      value: +
+      value: '*'
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[4]
@@ -359,7 +359,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[5]
-      value: '-'
+      value: )
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[6]
