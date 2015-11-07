@@ -62,7 +62,7 @@ public class EquationPanel : MonoBehaviour
                 formula += slot.item.GetComponent<EquationPiece>().Value;   
             }
         }
-        FindObjectOfType<GraphicLineGenerator>().formula = formula;
+        FindObjectOfType<GraphicLineGenerator>().Formula = formula;
     }
 
     private List<EquationSlot> FreeSlots()

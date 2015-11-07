@@ -3,35 +3,62 @@ using System.Collections;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
-public class GraphicLineGenerator : MonoBehaviour {
-    public string formula;
+public class GraphicLineGenerator : MonoBehaviour
+{
+    string formula = "x";
+    public string Formula
+    {
+        get
+        {
+            return formula;
+        }
+
+        set
+        {
+            try
+            {
+                formula = value;
+                oldPoints = points;
+                newPoints = vector.getVect(formula);
+                StartCoroutine(LerpGraph());
+            }
+            catch { }
+        }
+    }
     LineRenderer lineRenderer;
-    [Range(0.0f , 1.0f)] 
+    [Range(0.0f, 1.0f)]
     public float bold = 0.2f;
     getVector vector = new getVector();
-    string prevf;
     List<Vector2> points;
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update() {
-        try
+
+    public float lerpTime = 0.5f;
+
+    List<Vector2> oldPoints;
+    List<Vector2> newPoints;
+    private EdgeCollider2D edgeCollider;
+
+    void Awake()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+        edgeCollider = GetComponent<EdgeCollider2D>();
+        points = vector.getVect(formula);
+    }
+
+    IEnumerator LerpGraph()
+    {
+        points = oldPoints;
+        for (float i = 0; i < lerpTime; i += Time.deltaTime)
         {
-            if (prevf != formula)
+            for (int j = 0; j < oldPoints.Count; j++)
             {
-                points = vector.getVect(formula);
-                lineRenderer = GetComponent<LineRenderer>();
-                GenerateMesh(new List<Vector2>(points));
+                points[j] = Vector3.Lerp(oldPoints[j], newPoints[j], i / lerpTime);
             }
-            prevf = formula;
+            SetGraphicLine(new List<Vector2>(points));
+            yield return new WaitForEndOfFrame();
         }
-        catch { }
-	}
+    }
 
-
-    void GenerateMesh(List<Vector2> points)
+    void SetGraphicLine(List<Vector2> points)
     {
         lineRenderer.SetVertexCount(points.Count);
 
@@ -40,6 +67,7 @@ public class GraphicLineGenerator : MonoBehaviour {
             lineRenderer.SetPosition(i, points[i]);
         }
 
-        GetComponent<EdgeCollider2D>().points = points.ToArray();
+        edgeCollider.points = points.ToArray();
     }
+
 }

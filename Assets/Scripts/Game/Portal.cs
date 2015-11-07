@@ -29,7 +29,7 @@ public class Portal : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D c)
     {
         teleport = true;
-        ((GameObject)GameObject.FindGameObjectWithTag("WinText")).GetComponent<TextMesh>().GetComponent<Renderer>().enabled = true;
-          
+        ((GameObject)GameObject.FindGameObjectWithTag("WinText")).GetComponent<TextMesh>().text = "Stage Clear";
+        FindObjectOfType<MainSphere>().GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
 }

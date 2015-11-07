@@ -6,6 +6,7 @@ public class MainSphere : MonoBehaviour
     public float lowerLevel = 0;
     Vector3 initalPos;
     Vector3 beginPos;
+    private LevelState levelState;
 
     public delegate void IsCanMoveUpdate();
 
@@ -16,13 +17,17 @@ public class MainSphere : MonoBehaviour
         set
         {
             isCanMove = value;
-            FindObjectOfType<LevelState>().PauseUpdated(!isCanMove);
+            if (levelState.PauseUpdated != null)
+            {
+                levelState.PauseUpdated(!isCanMove);
+            }
         }
     }
     public GameObject portal;
     // Use this for initialization
     void Start()
     {
+        levelState = FindObjectOfType<LevelState>();
         initalPos = transform.position;
         beginPos = transform.position;
     }

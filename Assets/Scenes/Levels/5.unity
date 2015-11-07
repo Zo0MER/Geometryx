@@ -303,7 +303,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: m_LocalPosition.x
@@ -363,7 +363,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[6]
-      value: +
+      value: '*'
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: f1f27e42bf65ec04cba31e6783e2bb7c, type: 2}
       propertyPath: formula.Array.data[7]
@@ -621,6 +621,10 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
+--- !u!1 &919406986 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100002, guid: 6721f6b758786554f9088a9882510c0e, type: 2}
+  m_PrefabInternal: {fileID: 307776695}
 --- !u!1 &1186409995
 GameObject:
   m_ObjectHideFlags: 0
@@ -971,14 +975,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 5800000, guid: 96df3dfcaa47eeb469bab2bfa12bc251, type: 2}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 96df3dfcaa47eeb469bab2bfa12bc251, type: 2}
-      propertyPath: lowerLevel
-      value: -8
-      objectReference: {fileID: 0}
+      propertyPath: portal
+      value: 
+      objectReference: {fileID: 919406986}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 96df3dfcaa47eeb469bab2bfa12bc251, type: 2}
   m_IsPrefabParent: 0
