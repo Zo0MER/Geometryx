@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
 
 [RequireComponent(typeof(LayoutElement))]
-public class Placeholder : MonoBehaviour {
+public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
+{
 
     LayoutElement layout;
     float minWidth;
@@ -46,4 +49,36 @@ public class Placeholder : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	}
+
+    void ReplaceYourselfWidth(GameObject piece)
+    {
+        piece.transform.SetParent(transform.parent);
+        piece.transform.SetSiblingIndex(transform.GetSiblingIndex());
+        Destroy(gameObject);
+    }
+
+    public void OnPointerEnter(PointerEventData pointerData)
+    {
+        if (DragHandler.itemBeginDraged != null && DragHandler.itemBeginDraged.GetComponent<LayoutElement>())
+        {
+            LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
+            StartScaleToWidth(layoutDropped.minWidth);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData pointerData)
+    {
+        if (DragHandler.itemBeginDraged != null)
+        {
+            StartScaleBack();
+        }
+    }
+
+    public void OnDrop(PointerEventData pointerData)
+    {
+        if (DragHandler.itemBeginDraged != null)
+        {
+            ReplaceYourselfWidth(DragHandler.itemBeginDraged);
+        }
+    }
 }
