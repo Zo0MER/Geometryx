@@ -9,60 +9,54 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 {
 
     LayoutElement layout;
-    float minWidth;
-    public float scaleTime;
+    float preferredWidth;
+    public float scaleTime = 0.2f;
+    public float closeScaleTime = 0.2f;
 
-    IEnumerator ScaleToWidth(float newWidth)
+    public void ScaleToWidth(float width)
     {
-        for (float i = 0; i < scaleTime; i += Time.deltaTime )
-        {
-            layout.minWidth = Mathf.SmoothStep(minWidth, newWidth, i / scaleTime);
-            yield return new WaitForEndOfFrame();
-        }
+        LeanTween.value(gameObject, (x) => layout.preferredWidth = x, preferredWidth, width, scaleTime)
+            .setEase(LeanTweenType.easeOutCubic);
+    }
+    public void ScaleBack()
+    {
+        LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, preferredWidth, scaleTime)
+            .setEase(LeanTweenType.easeOutCubic);
     }
 
-    IEnumerator ScaleBack()
+    bool isHasPiece()
     {
-        float currentWidth = layout.minWidth;
-        for (float i = 0; i < scaleTime; i += Time.deltaTime)
-        {
-            layout.minWidth = Mathf.SmoothStep(currentWidth, minWidth, i / scaleTime);
-            yield return new WaitForEndOfFrame();
-        }
+        return transform.childCount > 0;
     }
 
-    public void StartScaleToWidth(float newWidth)
-    {
-        StartCoroutine(ScaleToWidth(newWidth));
-    }
-    public void StartScaleBack()
-    {
-        StartCoroutine(ScaleBack());
-    }
-
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake () {
         layout = GetComponent<LayoutElement>();
-        minWidth = layout.minWidth;
+        preferredWidth = layout.preferredWidth;
+        DragHandler piece = transform.GetComponentInChildren<DragHandler>();
+        if (piece)
+        {
+            piece.OnBeginDragEvent += OnPieceRemoved;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	}
 
-    void ReplaceYourselfWidth(GameObject piece)
+    void SetPiece(GameObject piece)
     {
-        piece.transform.SetParent(transform.parent);
-        piece.transform.SetSiblingIndex(transform.GetSiblingIndex());
-        Destroy(gameObject);
+        piece.transform.SetParent(transform);
+        //piece.transform.localPosition = Vector3.zero;
+        LeanTween.moveLocal(piece, Vector3.zero, 0.1f);
     }
 
     public void OnPointerEnter(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && DragHandler.itemBeginDraged.GetComponent<LayoutElement>())
+        if (DragHandler.itemBeginDraged != null && DragHandler.itemBeginDraged.GetComponent<LayoutElement>() && !isHasPiece())
         {
             LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
-            StartScaleToWidth(layoutDropped.minWidth);
+            ScaleToWidth(layoutDropped.preferredWidth);
         }
     }
 
@@ -70,15 +64,25 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (DragHandler.itemBeginDraged != null)
         {
-            StartScaleBack();
+            ScaleBack();
         }
     }
 
     public void OnDrop(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null)
+        if (DragHandler.itemBeginDraged != null && !isHasPiece())
         {
-            ReplaceYourselfWidth(DragHandler.itemBeginDraged);
+            SetPiece(DragHandler.itemBeginDraged);
         }
+    }
+
+    void OnPieceRemoved(DragHandler piece)
+    {
+
+    }
+
+    public void Close()
+    {
+        LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, 0, closeScaleTime).setEase(LeanTweenType.easeOutCubic);
     }
 }
