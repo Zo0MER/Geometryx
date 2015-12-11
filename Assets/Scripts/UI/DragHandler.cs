@@ -9,10 +9,10 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 {
     public static GameObject itemBeginDraged;
     private Vector3 startPosition;
-    private GameObject startParent;
+    //private GameObject startParent;
     private CanvasGroup canvasGroup;
 
-    public System.Action<DragHandler> OnBeginDragEvent;
+    //public System.Action<DragHandler> OnBeginDragEvent;
 
     void Awake()
     {
@@ -21,15 +21,17 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (OnBeginDragEvent != null)
-        {
-            OnBeginDragEvent(GetComponent<DragHandler>());
-        }
+        //if (OnBeginDragEvent != null)
+        //{
+        //    OnBeginDragEvent(GetComponent<DragHandler>());
+        //}
         itemBeginDraged = gameObject;
         startPosition = transform.position;
-        startParent = transform.parent.gameObject;
+        //startParent = transform.parent.gameObject;
         canvasGroup.blocksRaycasts = false;
+        transform.parent.GetComponent<Placeholder>().OnPieceRemoved();
         transform.SetParent(FindObjectOfType<Canvas>().transform);
+
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -42,11 +44,11 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         itemBeginDraged = null;
         canvasGroup.blocksRaycasts = true;
-        if (!transform.parent.gameObject.GetComponent<Placeholder>())
-        {
-            transform.position = startPosition;
-            transform.SetParent(startParent.transform);
-        }
+        //if (!transform.parent.gameObject.GetComponent<Placeholder>())
+        //{
+        //    transform.position = startPosition;
+        //    transform.SetParent(startParent.transform);
+        //}
     }
 
     void Update()

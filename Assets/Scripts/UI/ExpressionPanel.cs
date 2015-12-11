@@ -11,7 +11,7 @@ public class ExpressionPanel : MonoBehaviour , IDropHandler, IPointerEnterHandle
     {
         foreach(DragHandler dragHandler in GetComponentsInChildren<DragHandler>())
         {
-            dragHandler.OnBeginDragEvent += ReplaceWithPlaceHolder;
+            //dragHandler.OnBeginDragEvent += ReplaceWithPlaceHolder;
         }
     }
 

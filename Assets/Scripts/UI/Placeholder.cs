@@ -30,19 +30,16 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
 
     // Use this for initialization
-    void Awake () {
+    void Awake()
+    {
         layout = GetComponent<LayoutElement>();
         preferredWidth = layout.preferredWidth;
-        DragHandler piece = transform.GetComponentInChildren<DragHandler>();
-        if (piece)
-        {
-            piece.OnBeginDragEvent += OnPieceRemoved;
-        }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+    }
 
     void SetPiece(GameObject piece)
     {
@@ -76,13 +73,15 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
-    void OnPieceRemoved(DragHandler piece)
+    public void OnPieceRemoved()
     {
-
+        Close();
     }
 
     public void Close()
     {
-        LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, 0, closeScaleTime).setEase(LeanTweenType.easeOutCubic);
+        var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, 0, closeScaleTime)
+            .setEase(LeanTweenType.easeOutCubic);
+        leen.destroyOnComplete = true;
     }
 }
