@@ -29,7 +29,10 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         startPosition = transform.position;
         //startParent = transform.parent.gameObject;
         canvasGroup.blocksRaycasts = false;
-        transform.parent.GetComponent<Placeholder>().OnPieceRemoved();
+        //if(transform.parent.GetComponent<Placeholder>())
+        //{
+        //    transform.parent.GetComponent<Placeholder>().OnPieceRemoved();
+        //}
         transform.SetParent(FindObjectOfType<Canvas>().transform);
 
     }

@@ -17,16 +17,18 @@ public class ExpressionPanel : MonoBehaviour , IDropHandler, IPointerEnterHandle
 
     void ReplaceWithPlaceHolder(DragHandler obj)
     {
-        AddPlaceholder(obj.GetComponent<LayoutElement>().minWidth, obj.transform.GetSiblingIndex());
+        AddSlot(obj.GetComponent<LayoutElement>().minWidth, obj.transform.GetSiblingIndex());
     }
 
-    GameObject AddPlaceholder(float width, int siblingIndex = 0)
+    public GameObject AddSlot(float width, int siblingIndex = 0, bool scale = false)
     {
         GameObject newPlaceholder = Instantiate(placeHolder);
         newPlaceholder.transform.SetParent(transform);
         newPlaceholder.transform.SetSiblingIndex(siblingIndex);
-        newPlaceholder.GetComponent<LayoutElement>().minWidth = width;
-        newPlaceholder.GetComponent<Placeholder>().Close();
+        if(scale)
+        {
+            newPlaceholder.GetComponent<Placeholder>().ScaleToWidth(width);
+        }
         return newPlaceholder;
     }
 

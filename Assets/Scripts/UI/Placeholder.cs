@@ -13,6 +13,8 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public float scaleTime = 0.2f;
     public float closeScaleTime = 0.2f;
 
+    public bool isCanBeEmpty = false;
+
     public void ScaleToWidth(float width)
     {
         LeanTween.value(gameObject, (x) => layout.preferredWidth = x, preferredWidth, width, scaleTime)
@@ -24,9 +26,9 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             .setEase(LeanTweenType.easeOutCubic);
     }
 
-    bool isHasPiece()
+    bool isEmpty()
     {
-        return transform.childCount > 0;
+        return transform.childCount == 0;
     }
 
     // Use this for initialization
@@ -50,32 +52,46 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && DragHandler.itemBeginDraged.GetComponent<LayoutElement>() && !isHasPiece())
+        if (DragHandler.itemBeginDraged != null && DragHandler.itemBeginDraged.GetComponent<LayoutElement>())
         {
-            LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
-            ScaleToWidth(layoutDropped.preferredWidth);
+            if (isEmpty())
+            {
+                LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
+                ScaleToWidth(layoutDropped.preferredWidth);
+            }
+            else
+            {
+                ExpressionPanel panel = transform.parent.GetComponent<ExpressionPanel>();
+                if (panel)
+                {
+                    LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
+                    panel.AddSlot(layoutDropped.preferredWidth, transform.GetSiblingIndex(), true);
+                }
+            }
         }
     }
 
     public void OnPointerExit(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null)
+        if (DragHandler.itemBeginDraged != null && isEmpty())
         {
-            ScaleBack();
+            if (!isCanBeEmpty)
+            {
+                Close();
+            }
+            else
+            {
+                ScaleBack();
+            }
         }
     }
 
     public void OnDrop(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && !isHasPiece())
+        if (DragHandler.itemBeginDraged != null && isEmpty())
         {
             SetPiece(DragHandler.itemBeginDraged);
         }
-    }
-
-    public void OnPieceRemoved()
-    {
-        Close();
     }
 
     public void Close()
