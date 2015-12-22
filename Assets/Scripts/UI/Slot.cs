@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 
 [RequireComponent(typeof(LayoutElement))]
-public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
+public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
 {
 
     LayoutElement layout;
@@ -26,7 +26,7 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             .setEase(LeanTweenType.easeOutCubic);
     }
 
-    bool isEmpty()
+    public bool isEmpty()
     {
         return transform.childCount == 0;
     }
@@ -38,10 +38,6 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         preferredWidth = layout.preferredWidth;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     void SetPiece(GameObject piece)
     {
@@ -52,11 +48,11 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && DragHandler.itemBeginDraged.GetComponent<LayoutElement>())
+        if (ExpressionToken.itemBeginDraged != null && ExpressionToken.itemBeginDraged.GetComponent<LayoutElement>())
         {
             if (isEmpty())
             {
-                LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
+                LayoutElement layoutDropped = ExpressionToken.itemBeginDraged.GetComponent<LayoutElement>();
                 ScaleToWidth(layoutDropped.preferredWidth);
             }
             else
@@ -64,7 +60,7 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 ExpressionPanel panel = transform.parent.GetComponent<ExpressionPanel>();
                 if (panel)
                 {
-                    LayoutElement layoutDropped = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
+                    LayoutElement layoutDropped = ExpressionToken.itemBeginDraged.GetComponent<LayoutElement>();
                     panel.AddSlot(layoutDropped.preferredWidth, transform.GetSiblingIndex(), true);
                 }
             }
@@ -73,7 +69,7 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && isEmpty())
+        if (ExpressionToken.itemBeginDraged != null && isEmpty())
         {
             if (!isCanBeEmpty)
             {
@@ -88,9 +84,10 @@ public class Placeholder : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnDrop(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && isEmpty())
+        if (ExpressionToken.itemBeginDraged != null && isEmpty())
         {
-            SetPiece(DragHandler.itemBeginDraged);
+            SetPiece(ExpressionToken.itemBeginDraged);
+            ExpressionToken piece = ExpressionToken.itemBeginDraged.GetComponent<ExpressionToken>();
         }
     }
 

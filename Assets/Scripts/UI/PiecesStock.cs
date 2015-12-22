@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[System.Obsolete("This is an obsolete method")]
 public class PiecesStock : MonoBehaviour, IDropHandler
 {
 
@@ -37,7 +38,7 @@ public class PiecesStock : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData pointerData)
     {
         
-        EquationPiece piece = DragHandler.itemBeginDraged.GetComponent<EquationPiece>();
+        EquationPiece piece = ExpressionToken.itemBeginDraged.GetComponent<EquationPiece>();
         if (piece)
         {
             piece.PutOnSlot(transform);

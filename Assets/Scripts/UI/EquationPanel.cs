@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+[System.Obsolete("This is an obsolete method")]
 public class EquationPanel : MonoBehaviour
 {
 

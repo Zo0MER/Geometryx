@@ -2,55 +2,42 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class ExpressionPanel : MonoBehaviour , IDropHandler, IPointerEnterHandler, IPointerExitHandler
+public class ExpressionPanel : MonoBehaviour
 {
-    public GameObject placeHolder;
+    public GameObject slot;
     
     public void Start()
     {
-        foreach(DragHandler dragHandler in GetComponentsInChildren<DragHandler>())
-        {
-            //dragHandler.OnBeginDragEvent += ReplaceWithPlaceHolder;
-        }
-    }
-
-    void ReplaceWithPlaceHolder(DragHandler obj)
-    {
-        AddSlot(obj.GetComponent<LayoutElement>().minWidth, obj.transform.GetSiblingIndex());
     }
 
     public GameObject AddSlot(float width, int siblingIndex = 0, bool scale = false)
     {
-        GameObject newPlaceholder = Instantiate(placeHolder);
-        newPlaceholder.transform.SetParent(transform);
-        newPlaceholder.transform.SetSiblingIndex(siblingIndex);
+        if (transform.GetChild(Mathf.Max(siblingIndex - 1, 0)).GetComponent<Slot>().isEmpty())
+        {
+            return null;
+        }
+
+        GameObject newSlot = Instantiate(slot);
+        newSlot.transform.SetParent(transform);
+        newSlot.transform.SetSiblingIndex(siblingIndex);
         if(scale)
         {
-            newPlaceholder.GetComponent<Placeholder>().ScaleToWidth(width);
+            newSlot.GetComponent <Slot>().ScaleToWidth(width);
         }
-        return newPlaceholder;
+        return newSlot;
     }
 
-    public void OnPointerEnter(PointerEventData pointerData)
+    List<string> GetMathExpression()
     {
-        //if (DragHandler.itemBeginDraged != null)
-        //{
-        //    GameObject placeholderObj = AddPlaceholder();
-        //    Placeholder placeholder = placeholderObj.GetComponent<Placeholder>();
-        //    LayoutElement layout = DragHandler.itemBeginDraged.GetComponent<LayoutElement>();
-        //    placeholder.StartScaleToWidth(layout.minWidth + 1.0f);
-        //}
-    }
+        List<string> tokens = new List<string>(transform.childCount);
+        foreach (Transform child in transform)
+        {
 
+        }
 
-    public void OnPointerExit(PointerEventData pointerData)
-    {
-    }
-
-    public void OnDrop(PointerEventData pointerData)
-    {
-        
+        return tokens;
     }
 
 }

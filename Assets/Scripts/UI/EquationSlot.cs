@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[System.Obsolete("This is an obsolete method")]
 public class EquationSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject item
@@ -27,7 +28,7 @@ public class EquationSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
     public void OnPointerEnter(PointerEventData pointerData)
     {
-        if (DragHandler.itemBeginDraged != null && item)
+        if (ExpressionToken.itemBeginDraged != null && item)
         {
             panel.MoveItemsToRight(this);
         }
@@ -40,7 +41,7 @@ public class EquationSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
             panel.MoveItemsToLeft(this);
         }
 
-        if (item == null && DragHandler.itemBeginDraged != null)
+        if (item == null && ExpressionToken.itemBeginDraged != null)
         {
             panel.RemoveSlot();
         }
@@ -56,7 +57,7 @@ public class EquationSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
             return;
         }
 
-        EquationPiece piece = DragHandler.itemBeginDraged.GetComponent<EquationPiece>();
+        EquationPiece piece = ExpressionToken.itemBeginDraged.GetComponent<EquationPiece>();
         if (piece)
         {
             piece.PutOnSlot(transform);

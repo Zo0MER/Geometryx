@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[System.Obsolete("This is an obsolete method")]
 public class EquationPiece : MonoBehaviour 
 {
     public bool isInEquation = false;
