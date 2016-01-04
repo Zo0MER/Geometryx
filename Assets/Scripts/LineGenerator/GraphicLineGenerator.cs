@@ -28,7 +28,7 @@ public class GraphicLineGenerator : MonoBehaviour
     LineRenderer lineRenderer;
     [Range(0.0f, 1.0f)]
     public float bold = 0.2f;
-    getVector vector = new getVector();
+    getVector vector;
     List<Vector2> points;
 
     public float lerpTime = 0.5f;
@@ -39,6 +39,7 @@ public class GraphicLineGenerator : MonoBehaviour
 
     void Awake()
     {
+        vector = (getVector)gameObject.AddComponent<getVector>();
         lineRenderer = GetComponent<LineRenderer>();
         edgeCollider = GetComponent<EdgeCollider2D>();
         points = vector.getVect(formula);

@@ -2,46 +2,45 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using System;
 
 [RequireComponent(typeof(CanvasGroup))]
 [RequireComponent(typeof(RectTransform))]
 public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-
-
     public static GameObject itemBeginDraged;
-    private Vector3 startPosition;
     private CanvasGroup canvasGroup;
+
+    Text label;
+
+    public Action<string> OnTokenChanged;
 
     public Defines.OperandType operandType;
     void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
+        label = GetComponentInChildren<Text>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         itemBeginDraged = gameObject;
-        startPosition = transform.position;
         canvasGroup.blocksRaycasts = false;
         transform.SetParent(FindObjectOfType<Canvas>().transform);
 
+        OnTokenChanged = null;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = Input.mousePosition;
-        //LeanTween.scale(GetComponent<RectTransform>(), new Vector2(1.2f, 1.2f), 0.3f).setEase(LeanTweenType.easeInBounce);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         itemBeginDraged = null;
         canvasGroup.blocksRaycasts = true;
-        if (!transform.parent.gameObject.GetComponent<Slot>())
-        {
-            
-        }
     }
 
     void Update()
@@ -54,5 +53,19 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             canvasGroup.blocksRaycasts = true;
         }
+    }
+
+    public void ChangeToken(string token)
+    {
+        if(transform.parent)
+        {
+            Slot slot = transform.parent.GetComponent<Slot>();
+            if (slot)
+            {
+                OnTokenChanged(token);
+            }
+        }
+
+        label.text = token;
     }
 }
