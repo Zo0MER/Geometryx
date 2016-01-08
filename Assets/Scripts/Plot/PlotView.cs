@@ -6,11 +6,10 @@ using System.Collections.Generic;
 public class PlotView : MonoBehaviour
 {
 
-
     LineRenderer lineRenderer;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.SetVertexCount(0);
@@ -18,7 +17,9 @@ public class PlotView : MonoBehaviour
 
     public void SetGraphicLine(List<Vector3> points)
     {
+
         lineRenderer.SetVertexCount(points.Count);
         lineRenderer.SetPositions(points.ToArray());
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿
+using System;
+
 public class Defines {
 
-    public enum OperandType { CloseParenthesis, OpenParenthesis, Operator, Function, Variable };
+    public enum OperandType { OpenBracket, CloseBracket, Operator, Function, Variable, Empty, None };
 }

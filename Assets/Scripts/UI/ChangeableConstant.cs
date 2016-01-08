@@ -21,5 +21,4 @@ public class ChangeableConstant : MonoBehaviour {
         slider.onValueChanged.AddListener(x => token.ChangeToken((leftBound + (rightBound - leftBound) * x).ToString("#0.00")));
     }
 
-
 }

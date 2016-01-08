@@ -14,6 +14,8 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     Text label;
 
+    public string value;
+
     public Action<string> OnTokenChanged;
 
     public Defines.OperandType operandType;
@@ -25,11 +27,17 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        Slot slot = GetComponentInParent<Slot>();
         itemBeginDraged = gameObject;
         canvasGroup.blocksRaycasts = false;
         transform.SetParent(FindObjectOfType<Canvas>().transform);
 
         OnTokenChanged = null;
+
+        if (slot)
+        {
+            slot.OnTokenRemove(gameObject);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -60,12 +68,26 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if(transform.parent)
         {
             Slot slot = transform.parent.GetComponent<Slot>();
-            if (slot)
+            if (slot && OnTokenChanged != null)
             {
                 OnTokenChanged(token);
             }
         }
 
         label.text = token;
+    }
+
+    public string Value()
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return label.text.Replace("\n", "");
+        }
+        return value;
+    }
+
+    public virtual void OnDroppedInSlot(Slot slot)
+    {
+        OnTokenChanged += (x => slot.ParentPanel.UpdateExpression());
     }
 }

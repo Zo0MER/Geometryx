@@ -17,6 +17,15 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
 
     ExpressionPanel parentPanel;
 
+    private bool isClosing = false;
+    public float openScaleTime;
+
+
+    public ExpressionPanel ParentPanel
+    {
+        get { return parentPanel; }
+    }
+
     // Use this for initialization
     void Awake()
     {
@@ -40,28 +49,33 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
             .setEase(LeanTweenType.easeOutCubic);
     }
 
-    public bool isEmpty()
+    public bool IsEmpty()
     {
         return transform.childCount == 0;
     }
 
-    void SetPiece(GameObject piece)
+    void OnTokenDrop(GameObject token)
     {
-        piece.transform.SetParent(transform);
-        piece.transform.localPosition = Vector3.zero;
-        LeanTween.moveLocal(piece, Vector3.zero, 0.1f);
+        token.transform.SetParent(transform);
+        token.transform.localPosition = Vector3.zero;
+        LeanTween.moveLocal(token, Vector3.zero, 0.1f);
+
+        var expressionToken = token.GetComponent<ExpressionToken>();
+        expressionToken.OnDroppedInSlot(this);
 
         parentPanel.UpdateExpression();
+    }
 
-        var token = piece.GetComponent<ExpressionToken>();
-        token.OnTokenChanged += (x => parentPanel.UpdateExpression());
+    public void OnTokenRemove(GameObject token)
+    {
+        parentPanel.UpdateExpression();
     }
 
     public void OnPointerEnter(PointerEventData pointerData)
     {
         if (ExpressionToken.itemBeginDraged != null && ExpressionToken.itemBeginDraged.GetComponent<LayoutElement>())
         {
-            if (isEmpty())
+            if (IsEmpty())
             {
                 LayoutElement layoutDropped = ExpressionToken.itemBeginDraged.GetComponent<LayoutElement>();
                 ScaleToWidth(layoutDropped.preferredWidth);
@@ -79,7 +93,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
 
     public void OnPointerExit(PointerEventData pointerData)
     {
-        if (ExpressionToken.itemBeginDraged != null && isEmpty())
+        if (ExpressionToken.itemBeginDraged != null && IsEmpty())
         {
             if (!isCanBeEmpty)
             {
@@ -94,18 +108,27 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
 
     public void OnDrop(PointerEventData pointerData)
     {
-        if (ExpressionToken.itemBeginDraged != null && isEmpty())
+        if (ExpressionToken.itemBeginDraged != null && IsEmpty())
         {
-            SetPiece(ExpressionToken.itemBeginDraged);
+            OnTokenDrop(ExpressionToken.itemBeginDraged);
         }
     }
 
     public void Close()
     {
+        if (isClosing)
+            return;
+
+        isClosing = true;
         var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, 0, closeScaleTime)
             .setEase(LeanTweenType.easeOutCubic);
         leen.destroyOnComplete = true;
-
-        parentPanel.UpdateExpression();
     }
+
+    public void Open(float width)
+    {
+        var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, 0, width, openScaleTime)
+            .setEase(LeanTweenType.easeOutCubic);
+    }
+
 }
