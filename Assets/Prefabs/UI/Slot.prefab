@@ -59,7 +59,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleTime: 0.2
   closeScaleTime: 0.2
-  isCanBeEmpty: 0
+  isPermament: 0
+  openScaleTime: 0.5
 --- !u!114 &11479860
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -111,6 +112,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: isCanBeEmpty
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: openScaleTime
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

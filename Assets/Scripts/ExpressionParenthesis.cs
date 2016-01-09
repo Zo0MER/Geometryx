@@ -20,12 +20,12 @@ public class ExpressionParenthesis : ExpressionToken
             : pairParenthesis.transform.parent.transform.GetSiblingIndex();
         if (opBracketIndex > clBracketIndex)
         {
-            SwapSide();
+            SwapBrackets();
         }
         base.OnDroppedInSlot(slot);
     }
 
-    void SwapSide()
+    void SwapBrackets()
     {
         pairParenthesis.ChangeToken(Value() == ")" ? ")": "(");
         pairParenthesis.operandType = operandType == Defines.OperandType.CloseBracket ? 

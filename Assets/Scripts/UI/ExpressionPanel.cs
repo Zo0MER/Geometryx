@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
+using Defines;
+using UnityEngine;
 
 public class ExpressionPanel : MonoBehaviour
 {
@@ -12,21 +10,19 @@ public class ExpressionPanel : MonoBehaviour
 
     public Action<string> OnExpressionChanged;
 
-    Dictionary<Defines.OperandType, List<Defines.OperandType>> syntaxMatch = new Dictionary<Defines.OperandType, List<Defines.OperandType>>()
+    readonly Dictionary<OperandType, List<OperandType>> syntaxMatch = new Dictionary<OperandType, List<OperandType>>
     {
-        {Defines.OperandType.Variable,
-            new List<Defines.OperandType>() {Defines.OperandType.OpenBracket, Defines.OperandType.Operator, Defines.OperandType.None} },
-        {Defines.OperandType.Operator,
-            new List<Defines.OperandType>() {Defines.OperandType.Variable} },
-        {Defines.OperandType.OpenBracket,
-            new List<Defines.OperandType>() {Defines.OperandType.Variable, Defines.OperandType.Function,
-                Defines.OperandType.OpenBracket, Defines.OperandType.Operator} },
-        {Defines.OperandType.CloseBracket,
-            new List<Defines.OperandType>() {Defines.OperandType.Variable, Defines.OperandType.CloseBracket} },
-        {Defines.OperandType.None,
-            new List<Defines.OperandType>() {Defines.OperandType.CloseBracket, Defines.OperandType.Variable} },
-        {Defines.OperandType.Function,
-            new List<Defines.OperandType>() {Defines.OperandType.OpenBracket, Defines.OperandType.Operator, Defines.OperandType.None } },
+        { OperandType.Variable, new List<OperandType> {OperandType.OpenBracket, OperandType.Operator,
+            OperandType.None} },
+        {OperandType.Operator, new List<OperandType> {OperandType.Variable} },
+        {OperandType.OpenBracket, new List<OperandType> { OperandType.Function, OperandType.OpenBracket,
+            OperandType.Operator, OperandType.None} },
+        {OperandType.CloseBracket, new List<OperandType> {OperandType.Variable, OperandType.CloseBracket} },
+        {OperandType.None, new List<OperandType> {OperandType.CloseBracket, OperandType.Variable, OperandType.Empty } },
+        {OperandType.Function, new List<OperandType> {OperandType.OpenBracket, OperandType.Operator,
+            OperandType.None } },
+        {OperandType.Empty, new List<OperandType> { OperandType.OpenBracket, OperandType.Operator, OperandType.None,
+            OperandType.Function, OperandType.CloseBracket, OperandType.Variable} }
 
     };
 
@@ -45,123 +41,96 @@ public class ExpressionPanel : MonoBehaviour
         GameObject newSlot = Instantiate(slot);
         newSlot.transform.SetParent(transform);
         newSlot.transform.SetSiblingIndex(siblingIndex);
-        newSlot.GetComponent <Slot>().Open(width);
-        newSlot.GetComponent<Slot>().isCanBeEmpty = isCanBeEmpty;
+        newSlot.GetComponent<Slot>().Open(width);
+        newSlot.GetComponent<Slot>().isPermament = isCanBeEmpty;
         return newSlot;
     }
 
     public void UpdateExpression()
     {
         Stack<ExpressionParenthesis> opBraketStack = new Stack<ExpressionParenthesis>();
-        List<Slot> slotsToClose = new List<Slot>();
-        foreach (Transform slot in transform)
+        List<Slot> slots = (from Transform slotTransform in transform select slotTransform.GetComponent<Slot>()).ToList();
+        slots.RemoveAll(slot => slot.IsEmpty() && slot.IsClosing);
+        foreach (var slot in slots)
         {
-            if (!slot.GetComponent<Slot>().IsEmpty())
+            if (!slot.IsEmpty())
             {
                 var token = slot.GetComponentInChildren<ExpressionToken>();
-                if (token.operandType == Defines.OperandType.OpenBracket)
+                if (token.operandType == OperandType.OpenBracket)
                 {
                     opBraketStack.Push((ExpressionParenthesis)token);
                 }
-                if (token.operandType == Defines.OperandType.CloseBracket && opBraketStack.Count > 0)
+                if (token.operandType == OperandType.CloseBracket && opBraketStack.Count > 0)
                 {
-                    var opBracket = opBraketStack.Pop();
-                    var clBracket = (ExpressionParenthesis) token;
-                    opBracket.PairParenthesis = clBracket;
-                    clBracket.PairParenthesis = opBracket;
+                    ((ExpressionParenthesis)token).PairParenthesis = opBraketStack.Pop();
                 }
-                if (token.operandType == Defines.OperandType.Operator)
+
+                OperandType tokenToTheLeftType = OperandType.None;
+                if (slot.transform.GetSiblingIndex() != 0)
                 {
-                    if (slot.GetSiblingIndex() == 0)
+                    Slot slotToTheLeft = transform.GetChild(slot.transform.GetSiblingIndex() - 1).GetComponent<Slot>();
+                    if (slotToTheLeft.IsEmpty())
                     {
-                        AddSlot(siblingIndex: slot.GetSiblingIndex(), isCanBeEmpty: true);
+                        tokenToTheLeftType = OperandType.Empty;
                     }
                     else
                     {
-                        Slot leftSlot = transform.GetChild(slot.GetSiblingIndex() - 1).GetComponent<Slot>();
-                        if (!leftSlot.IsEmpty())
-                        {
-                            var leftToken = leftSlot.GetComponentInChildren<ExpressionToken>();
-                            if (leftToken.operandType != Defines.OperandType.Variable &&
-                                leftToken.operandType != Defines.OperandType.CloseBracket)
-                            {
-                                AddSlot(siblingIndex: slot.GetSiblingIndex(), isCanBeEmpty: true);
-                            }
-                        }
+                        var tokenToTheLeft = slotToTheLeft.GetComponentInChildren<ExpressionToken>();
+                        tokenToTheLeftType = tokenToTheLeft.operandType;
+                    }
+                }
 
-                    }
-                }
-                if (token.operandType == Defines.OperandType.Variable ||
-                    token.operandType == Defines.OperandType.Function)
+                if (!syntaxMatch[token.operandType].Contains(tokenToTheLeftType))
                 {
-                    if (slot.GetSiblingIndex() > 0)
-                    {
-                        Slot leftSlot = transform.GetChild(slot.GetSiblingIndex() - 1).GetComponent<Slot>();
-                        if (!leftSlot.IsEmpty())
-                        {
-                            var leftToken = leftSlot.GetComponentInChildren<ExpressionToken>();
-                            if (leftToken.operandType != Defines.OperandType.OpenBracket &&
-                                leftToken.operandType != Defines.OperandType.Operator)
-                            {
-                                AddSlot(siblingIndex: slot.GetSiblingIndex(), isCanBeEmpty: true);
-                            }
-                        }
-                    }
-                }
-                if (token.operandType == Defines.OperandType.OpenBracket)
-                {
-                    if (slot.GetSiblingIndex() > 0)
-                    {
-                        Slot leftSlot = transform.GetChild(slot.GetSiblingIndex() - 1).GetComponent<Slot>();
-                        if (!leftSlot.IsEmpty())
-                        {
-                            var leftToken = leftSlot.GetComponentInChildren<ExpressionToken>();
-                            if (leftToken.operandType != Defines.OperandType.Function &&
-                                leftToken.operandType != Defines.OperandType.Operator)
-                            {
-                                AddSlot(siblingIndex: slot.GetSiblingIndex(), isCanBeEmpty: true);
-                            }
-                        }
-                    }
-                }
-                if (token.operandType == Defines.OperandType.CloseBracket)
-                {
-                    if (slot.GetSiblingIndex() > 0)
-                    {
-                        Slot leftSlot = transform.GetChild(slot.GetSiblingIndex() - 1).GetComponent<Slot>();
-                        if (!leftSlot.IsEmpty())
-                        {
-                            var leftToken = leftSlot.GetComponentInChildren<ExpressionToken>();
-                            if (leftToken.operandType != Defines.OperandType.Variable &&
-                                leftToken.operandType != Defines.OperandType.CloseBracket)
-                            {
-                                AddSlot(siblingIndex: slot.GetSiblingIndex(), isCanBeEmpty: true);
-                            }
-                        }
-                    }
+                    AddSlot(siblingIndex: slot.transform.GetSiblingIndex(), isCanBeEmpty: true);
                 }
             }
             else
             {
-                Slot leftSlot = transform.GetChild(slot.GetSiblingIndex() - 1).GetComponent<Slot>();
-                if (leftSlot.IsEmpty())
+                OperandType tokenToTheLeftType = OperandType.None;
+                OperandType tokenToTheRightType = OperandType.None;
+                if (slot.transform.GetSiblingIndex() > 0)
                 {
-                    slotsToClose.Add(leftSlot);
+                    Slot leftSlot = transform.GetChild(slot.transform.GetSiblingIndex() - 1).GetComponent<Slot>();
+                    if (leftSlot.IsEmpty())
+                    {
+                        tokenToTheLeftType = OperandType.Empty;
+                    }
+                    else
+                    {
+                        ExpressionToken token = leftSlot.GetComponentInChildren<ExpressionToken>();
+                        tokenToTheLeftType = token.operandType;
+                    }
                 }
+                if (slot.transform.GetSiblingIndex() + 1 < transform.childCount)
+                {
+                    Slot leftSlot = transform.GetChild(slot.transform.GetSiblingIndex() + 1).GetComponent<Slot>();
+                    if (leftSlot.IsEmpty())
+                    {
+                        tokenToTheRightType = OperandType.Empty;
+                    }
+                    else
+                    {
+                        ExpressionToken token = leftSlot.GetComponentInChildren<ExpressionToken>();
+                        tokenToTheRightType = token.operandType;
+                    }
+                }
+
+                if (syntaxMatch[tokenToTheRightType].Contains(tokenToTheLeftType))
+                {
+                    slot.Close();
+                }
+                
             }
         }
-
-        slotsToClose.ForEach(slot => slot.Close());
-        slotsToClose.Clear();
 
         if (transform.childCount > 0)
         {
             Slot lastSlot = transform.GetChild(transform.childCount - 1).GetComponent<Slot>();
             if (!lastSlot.IsEmpty())
             {
-                var lastToken = lastSlot.GetComponentInChildren<ExpressionToken>();
-                if (lastToken.operandType != Defines.OperandType.CloseBracket &&
-                    lastToken.operandType != Defines.OperandType.Variable)
+                var token = lastSlot.GetComponentInChildren<ExpressionToken>();
+                if (!syntaxMatch[OperandType.None].Contains(token.operandType))
                 {
                     AddSlot(siblingIndex: transform.childCount, isCanBeEmpty: true);
                 }
