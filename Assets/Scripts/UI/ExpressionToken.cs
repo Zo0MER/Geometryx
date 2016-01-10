@@ -4,9 +4,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
+using UnityEditor;
 
 [RequireComponent(typeof(CanvasGroup))]
 [RequireComponent(typeof(RectTransform))]
+[RequireComponent(typeof(LayoutElement))]
 public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static GameObject itemBeginDraged;
@@ -20,10 +22,18 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public Defines.OperandType operandType;
 
+    public StockPanel stockPanel;
+
+    private LayoutElement layout;
+    private RectTransform rectTransform;
+
     void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
         label = GetComponentInChildren<Text>();
+        layout = GetComponent<LayoutElement>();
+        stockPanel = FindObjectOfType<StockPanel>();
+        rectTransform = GetComponent<RectTransform>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -50,6 +60,29 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         itemBeginDraged = null;
         canvasGroup.blocksRaycasts = true;
+        if (!IsInSlot())
+        {
+            MoveInStock();
+        }
+    }
+
+    public virtual void MoveInStock()
+    {
+        float currentSize = layout.preferredWidth;
+        var leen = LeanTween.value(gameObject, (x) =>
+        {
+            transform.localScale = new Vector2(x, x);
+        },
+            1, 0.0f, 0.2f);
+        leen.onComplete += () => transform.SetParent(stockPanel.transform);
+        leen = LeanTween.value(gameObject, (x) =>
+        {
+            transform.localScale = new Vector2(x, x);
+            layout.preferredWidth = x * currentSize;
+        },
+            0.0f, 1, 0.5f);
+        leen.delay = 0.2f;
+        leen.setEase(LeanTweenType.easeOutElastic);
     }
 
     void Update()

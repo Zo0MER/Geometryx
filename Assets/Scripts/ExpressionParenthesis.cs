@@ -7,6 +7,8 @@ public class ExpressionParenthesis : ExpressionToken
 
     ExpressionParenthesis pairParenthesis;
 
+
+
     public ExpressionParenthesis PairParenthesis
     {
         set { pairParenthesis = value; }
@@ -33,5 +35,10 @@ public class ExpressionParenthesis : ExpressionToken
         ChangeValue(Value() == ")" ? "(" : ")", false);
         operandType = operandType == Defines.OperandType.CloseBracket ?
              Defines.OperandType.OpenBracket :  Defines.OperandType.CloseBracket;
+    }
+
+    public override void MoveInStock()
+    {
+        base.MoveInStock();
     }
 }

@@ -75,7 +75,6 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
     void OnTokenDrop(GameObject token)
     {
         token.transform.SetParent(transform);
-        token.transform.localPosition = Vector3.zero;
         LeanTween.moveLocal(token, Vector3.zero, 0.1f);
 
         var expressionToken = token.GetComponent<ExpressionToken>();
