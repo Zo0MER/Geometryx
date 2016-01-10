@@ -27,10 +27,10 @@ public class ExpressionParenthesis : ExpressionToken
 
     void SwapBrackets()
     {
-        pairParenthesis.ChangeToken(Value() == ")" ? ")": "(");
+        pairParenthesis.ChangeValue(Value() == ")" ? ")": "(", false);
         pairParenthesis.operandType = operandType == Defines.OperandType.CloseBracket ? 
             Defines.OperandType.CloseBracket : Defines.OperandType.OpenBracket;
-        ChangeToken(Value() == ")" ? "(" : ")");
+        ChangeValue(Value() == ")" ? "(" : ")", false);
         operandType = operandType == Defines.OperandType.CloseBracket ?
              Defines.OperandType.OpenBracket :  Defines.OperandType.CloseBracket;
     }

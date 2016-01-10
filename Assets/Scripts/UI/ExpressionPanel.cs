@@ -13,16 +13,17 @@ public class ExpressionPanel : MonoBehaviour
     readonly Dictionary<OperandType, List<OperandType>> syntaxMatch = new Dictionary<OperandType, List<OperandType>>
     {
         { OperandType.Variable, new List<OperandType> {OperandType.OpenBracket, OperandType.Operator,
-            OperandType.None} },
-        {OperandType.Operator, new List<OperandType> {OperandType.Variable} },
+            OperandType.None, OperandType.Empty} },
+        {OperandType.Operator, new List<OperandType> {OperandType.Variable, OperandType.Empty } },
         {OperandType.OpenBracket, new List<OperandType> { OperandType.Function, OperandType.OpenBracket,
-            OperandType.Operator, OperandType.None} },
-        {OperandType.CloseBracket, new List<OperandType> {OperandType.Variable, OperandType.CloseBracket} },
+            OperandType.Operator, OperandType.None, OperandType.Empty} },
+        {OperandType.CloseBracket, new List<OperandType> {OperandType.Variable, OperandType.CloseBracket,
+            OperandType.Empty} },
         {OperandType.None, new List<OperandType> {OperandType.CloseBracket, OperandType.Variable, OperandType.Empty } },
         {OperandType.Function, new List<OperandType> {OperandType.OpenBracket, OperandType.Operator,
-            OperandType.None } },
+            OperandType.None, OperandType.Empty } },
         {OperandType.Empty, new List<OperandType> { OperandType.OpenBracket, OperandType.Operator, OperandType.None,
-            OperandType.Function, OperandType.CloseBracket, OperandType.Variable} }
+            OperandType.Function, OperandType.CloseBracket, OperandType.Variable, OperandType.Empty} }
 
     };
 
@@ -31,7 +32,7 @@ public class ExpressionPanel : MonoBehaviour
         UpdateExpression();
     }
 
-    public GameObject AddSlot(float width = 15.0f, int siblingIndex = 0, bool scale = false, bool isCanBeEmpty = false)
+    public GameObject AddSlot(float width = 53.0f, int siblingIndex = 0, bool scale = false, bool isCanBeEmpty = false)
     {
         if (transform.GetChild(Mathf.Max(siblingIndex - 1, 0)).GetComponent<Slot>().IsEmpty())
         {
@@ -62,7 +63,9 @@ public class ExpressionPanel : MonoBehaviour
                 }
                 if (token.operandType == OperandType.CloseBracket && opBraketStack.Count > 0)
                 {
-                    ((ExpressionParenthesis)token).PairParenthesis = opBraketStack.Pop();
+                    var bracket = opBraketStack.Pop();
+                    ((ExpressionParenthesis)token).PairParenthesis = bracket;
+                    bracket.PairParenthesis = ((ExpressionParenthesis) token);
                 }
 
                 OperandType tokenToTheLeftType = OperandType.None;
@@ -152,6 +155,7 @@ public class ExpressionPanel : MonoBehaviour
 
     public bool IsValidExpression()
     {
-        return (from Transform child in transform select child.GetComponent<Slot>()).All(slot => !slot.IsEmpty());
+        return (from Transform child in transform select child.GetComponent<Slot>()).All(slot => !slot.IsEmpty() 
+            || (slot.IsEmpty() && slot.IsClosing));
     }
 }

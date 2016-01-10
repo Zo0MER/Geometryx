@@ -16,9 +16,9 @@ public class ChangeableConstant : MonoBehaviour {
         slider = GetComponentInChildren<Slider>();
         token = GetComponent<ExpressionToken>();
 
-        token.ChangeToken((leftBound + (rightBound - leftBound) * slider.value).ToString("#0.00"));
+        token.ChangeValue((leftBound + (rightBound - leftBound) * slider.value).ToString("#0.00"));
 
-        slider.onValueChanged.AddListener(x => token.ChangeToken((leftBound + (rightBound - leftBound) * x).ToString("#0.00")));
+        slider.onValueChanged.AddListener(x => token.ChangeValue((leftBound + (rightBound - leftBound) * x).ToString("#0.00")));
     }
 
 }
