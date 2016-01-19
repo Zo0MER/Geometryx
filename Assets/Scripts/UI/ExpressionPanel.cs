@@ -14,7 +14,7 @@ public class ExpressionPanel : MonoBehaviour
     {
         { OperandType.Variable, new List<OperandType> {OperandType.OpenBracket, OperandType.Operator,
             OperandType.None, OperandType.Empty} },
-        {OperandType.Operator, new List<OperandType> {OperandType.Variable, OperandType.Empty } },
+        {OperandType.Operator, new List<OperandType> {OperandType.Variable, OperandType.Empty, OperandType.CloseBracket } },
         {OperandType.OpenBracket, new List<OperandType> { OperandType.Function, OperandType.OpenBracket,
             OperandType.Operator, OperandType.None, OperandType.Empty} },
         {OperandType.CloseBracket, new List<OperandType> {OperandType.Variable, OperandType.CloseBracket,

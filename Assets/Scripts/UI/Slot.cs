@@ -46,6 +46,10 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
     void Start()
     {
         parentPanel = transform.parent.GetComponent<ExpressionPanel>();
+        if (!IsEmpty())
+        {
+            OnTokenDrop(transform.GetChild(0).gameObject);
+        }
     }
 
     public void ScaleToWidth(float width)
@@ -155,6 +159,26 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
         var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, 0, width, openScaleTime)
             .setEase(LeanTweenType.easeOutCubic);
         leen.onComplete += () => currentState = SlotState.None;
+
+        leen.onComplete += () =>
+        {
+            if (!IsEmpty())
+            {
+                var token = GetComponentInChildren<ExpressionToken>();
+                LeanTween.moveLocal(token.gameObject, Vector3.zero, 0.1f);
+            }
+        };
     }
 
+
+    Defines.OperandType GetOperandType()
+    {
+        if (IsEmpty())
+        {
+            return Defines.OperandType.Empty;
+        }
+
+        var token = GetComponentInChildren<ExpressionToken>();
+        return token.operandType;
+    }
 }

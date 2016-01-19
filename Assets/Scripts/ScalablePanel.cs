@@ -9,6 +9,15 @@ public class ScalablePanel : MonoBehaviour
 
     Vector2 initalSize;
     public Vector2 closedSize = Vector2.zero;
+    public LeanTweenType openEasing;
+    public LeanTweenType closeEasing;
+
+    private bool isOpen = true;
+
+    public bool IsOpen
+    {
+        get { return isOpen; }
+    }
 
     void Awake()
     {
@@ -17,14 +26,20 @@ public class ScalablePanel : MonoBehaviour
     }
 
 	public void Close()
-    {
-        LeanTween.value(gameObject, (x) => rectTransform.sizeDelta = x, initalSize, closedSize, closeTime)
-           .setEase(LeanTweenType.easeOutCubic);
-    }
+	{
+	    isOpen = false;
+        //LeanTween.value(gameObject, (x) => rectTransform.sizeDelta = x, initalSize, closedSize, closeTime)
+        //   .setEase(closeEasing);
+        LeanTween.scale(gameObject, Vector2.zero, closeTime).setEase(closeEasing);
+	}
 
     public void Open()
     {
-        LeanTween.value(gameObject, (x) => rectTransform.sizeDelta = x, closedSize, initalSize, closeTime)
-           .setEase(LeanTweenType.easeOutCubic);
+        isOpen = true;
+        //LeanTween.value(gameObject, (x) => rectTransform.sizeDelta = x, closedSize, initalSize, closeTime)
+        //   .setEase(openEasing);
+
+        LeanTween.scale(gameObject, Vector2.one, closeTime).setEase(openEasing);
+
     }
 }
