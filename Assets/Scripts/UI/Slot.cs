@@ -171,14 +171,26 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
     }
 
 
-    Defines.OperandType GetOperandType()
+    public Defines.OperandType GetOperandType()
     {
         if (IsEmpty())
         {
+
             return Defines.OperandType.Empty;
         }
 
         var token = GetComponentInChildren<ExpressionToken>();
         return token.operandType;
+    }
+
+    void Update()
+    {
+        if (!isPermament && IsEmpty())
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                Close();
+            }
+        }
     }
 }

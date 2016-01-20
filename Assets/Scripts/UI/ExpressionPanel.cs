@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Defines;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ExpressionPanel : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class ExpressionPanel : MonoBehaviour
             OperandType.Operator, OperandType.None, OperandType.Empty} },
         {OperandType.CloseBracket, new List<OperandType> {OperandType.Variable, OperandType.CloseBracket,
             OperandType.Empty} },
-        {OperandType.None, new List<OperandType> {OperandType.CloseBracket, OperandType.Variable, OperandType.Empty } },
+        {OperandType.None, new List<OperandType> { } },
         {OperandType.Function, new List<OperandType> {OperandType.OpenBracket, OperandType.Operator,
             OperandType.None, OperandType.Empty } },
         {OperandType.Empty, new List<OperandType> { OperandType.OpenBracket, OperandType.Operator, OperandType.None,
@@ -57,11 +58,11 @@ public class ExpressionPanel : MonoBehaviour
             if (!slot.IsEmpty())
             {
                 var token = slot.GetComponentInChildren<ExpressionToken>();
-                if (token.operandType == OperandType.OpenBracket)
+                if (slot.GetOperandType() == OperandType.OpenBracket)
                 {
                     opBraketStack.Push((ExpressionParenthesis)token);
                 }
-                if (token.operandType == OperandType.CloseBracket && opBraketStack.Count > 0)
+                if (slot.GetOperandType() == OperandType.CloseBracket && opBraketStack.Count > 0)
                 {
                     var bracket = opBraketStack.Pop();
                     ((ExpressionParenthesis)token).PairParenthesis = bracket;
@@ -71,19 +72,11 @@ public class ExpressionPanel : MonoBehaviour
                 OperandType tokenToTheLeftType = OperandType.None;
                 if (slot.transform.GetSiblingIndex() != 0)
                 {
-                    Slot slotToTheLeft = transform.GetChild(slot.transform.GetSiblingIndex() - 1).GetComponent<Slot>();
-                    if (slotToTheLeft.IsEmpty())
-                    {
-                        tokenToTheLeftType = OperandType.Empty;
-                    }
-                    else
-                    {
-                        var tokenToTheLeft = slotToTheLeft.GetComponentInChildren<ExpressionToken>();
-                        tokenToTheLeftType = tokenToTheLeft.operandType;
-                    }
+                    Slot leftSlot = transform.GetChild(slot.transform.GetSiblingIndex() - 1).GetComponent<Slot>();
+                    tokenToTheLeftType = leftSlot.GetOperandType();
                 }
 
-                if (!syntaxMatch[token.operandType].Contains(tokenToTheLeftType))
+                if (!syntaxMatch[slot.GetOperandType()].Contains(tokenToTheLeftType))
                 {
                     AddSlot(siblingIndex: slot.transform.GetSiblingIndex(), isCanBeEmpty: true);
                 }
@@ -92,31 +85,19 @@ public class ExpressionPanel : MonoBehaviour
             {
                 OperandType tokenToTheLeftType = OperandType.None;
                 OperandType tokenToTheRightType = OperandType.None;
-                if (slot.transform.GetSiblingIndex() > 0)
+                for (int i = slot.transform.GetSiblingIndex() - 1; i >= 0; i--)
                 {
-                    Slot leftSlot = transform.GetChild(slot.transform.GetSiblingIndex() - 1).GetComponent<Slot>();
-                    if (leftSlot.IsEmpty())
+                    Slot leftSlot = transform.GetChild(i).GetComponent<Slot>();
+                    tokenToTheLeftType = leftSlot.GetOperandType();
+                    if (tokenToTheLeftType != OperandType.Empty)
                     {
-                        tokenToTheLeftType = OperandType.Empty;
-                    }
-                    else
-                    {
-                        ExpressionToken token = leftSlot.GetComponentInChildren<ExpressionToken>();
-                        tokenToTheLeftType = token.operandType;
+                        break;
                     }
                 }
                 if (slot.transform.GetSiblingIndex() + 1 < transform.childCount)
                 {
-                    Slot leftSlot = transform.GetChild(slot.transform.GetSiblingIndex() + 1).GetComponent<Slot>();
-                    if (leftSlot.IsEmpty())
-                    {
-                        tokenToTheRightType = OperandType.Empty;
-                    }
-                    else
-                    {
-                        ExpressionToken token = leftSlot.GetComponentInChildren<ExpressionToken>();
-                        tokenToTheRightType = token.operandType;
-                    }
+                    Slot rightSlot = transform.GetChild(slot.transform.GetSiblingIndex() + 1).GetComponent<Slot>();
+                    tokenToTheRightType = rightSlot.GetOperandType();
                 }
 
                 if (syntaxMatch[tokenToTheRightType].Contains(tokenToTheLeftType))
@@ -132,8 +113,7 @@ public class ExpressionPanel : MonoBehaviour
             Slot lastSlot = transform.GetChild(transform.childCount - 1).GetComponent<Slot>();
             if (!lastSlot.IsEmpty())
             {
-                var token = lastSlot.GetComponentInChildren<ExpressionToken>();
-                if (!syntaxMatch[OperandType.None].Contains(token.operandType))
+                if (!syntaxMatch[OperandType.None].Contains(lastSlot.GetOperandType()))
                 {
                     AddSlot(siblingIndex: transform.childCount, isCanBeEmpty: true);
                 }
@@ -141,7 +121,7 @@ public class ExpressionPanel : MonoBehaviour
         }
 
 
-        if (IsValidExpression() && OnExpressionChanged != null)
+        if (OnExpressionChanged != null)
         {
             OnExpressionChanged(GetMathExpression());
         }
