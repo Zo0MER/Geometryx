@@ -22,7 +22,7 @@ public class ExpressionChangeableConstant : ExpressionToken, IPointerClickHandle
         ChangeValue((leftBound + (rightBound - leftBound) * slider.value).ToString("#0.00"));
 
         slider.onValueChanged.AddListener(x => ChangeValue((leftBound + (rightBound - leftBound) * x)
-            .ToString("#0.00")));
+            .ToString("#0.00"), "("+(leftBound + (rightBound - leftBound) * x).ToString()+")"));
 
         sliderPanel.Close();
     }

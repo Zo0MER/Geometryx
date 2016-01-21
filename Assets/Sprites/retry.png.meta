@@ -1,12 +1,13 @@
 fileFormatVersion: 2
-guid: b733f2c6ebe07a149afdae4fc2c2336c
+guid: c23a6ddca414b7a428ce804c1fa666d6
+timeCreated: 1453386049
+licenseType: Pro
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: Sphere_0
+  fileIDToRecycleName: {}
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -25,11 +26,11 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
-  maxTextureSize: 1024
+  textureFormat: -2
+  maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: 1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -48,18 +49,7 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites:
-    - name: Sphere_0
-      rect:
-        serializedVersion: 2
-        x: 1176
-        y: 700
-        width: 184
-        height: 184
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
+    sprites: []
     outline: []
   spritePackingTag: 
   userData: 

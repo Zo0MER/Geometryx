@@ -97,12 +97,13 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
     }
 
-    public void ChangeValue(string token, bool callUpdate = true)
+    public void ChangeValue(string token, string _value = "", bool callUpdate = true)
     {
 
         Slot slot = GetComponentInParent<Slot>();
         if (callUpdate && slot != null && OnTokenChanged != null)
         {
+            value = _value;
             OnTokenChanged(token);
         }
 

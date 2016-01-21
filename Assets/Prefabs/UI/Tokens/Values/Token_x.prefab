@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 
   operandType: 4
+  stockPanel: {fileID: 0}
 --- !u!114 &11451400
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -127,8 +128,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 15
-  m_PreferredHeight: 20
+  m_PreferredWidth: 53
+  m_PreferredHeight: 53
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
 --- !u!222 &22256764
@@ -156,10 +157,10 @@ RectTransform:
   - {fileID: 22423472}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 53, y: 53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22423472
 RectTransform:
