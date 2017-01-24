@@ -5,6 +5,7 @@ public class PlotPresenter : MonoBehaviour {
 
     ExpressionPanel exprPanel;
     PlotView plotView;
+    PlotPointsGenerator plotPointsGenerator = new PlotPointsGenerator();
 
     void Awake()
     {
@@ -19,6 +20,9 @@ public class PlotPresenter : MonoBehaviour {
 
     void UpdatePlot(string expr)
     {
-        plotView.SetGraphicLine(PlotPointsGenerator.SimpleGeneratePoints(expr));
+        if (string.IsNullOrEmpty(expr)) return;
+
+        plotView.SetGraphicLine(plotPointsGenerator.SimpleGeneratePoints(expr));
+        //plotView.SetGraphicLine(plotPointsGenerator.GenerateLine(expr));
     }
 }

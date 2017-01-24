@@ -43,6 +43,14 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         canvasGroup.blocksRaycasts = false;
         transform.SetParent(FindObjectOfType<Canvas>().transform);
 
+        float currentSize = layout.preferredWidth;
+        var leen = LeanTween.value(gameObject, (x) =>
+        {
+            transform.localScale = new Vector2(x, x);
+        },
+            1, 1.1f, 0.2f);
+        leen.setEase(LeanTweenType.easeOutElastic);
+
         OnTokenChanged = null;
 
         if (slot)
@@ -58,6 +66,13 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        var leen = LeanTween.value(gameObject, (x) =>
+        {
+            transform.localScale = new Vector2(x, x);
+        },
+            1.1f, 1, 0.2f);
+        leen.setEase(LeanTweenType.easeOutElastic);
+
         itemBeginDraged = null;
         canvasGroup.blocksRaycasts = true;
         if (!IsInSlot())

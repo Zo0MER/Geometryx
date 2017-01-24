@@ -5,30 +5,10 @@ using System.Collections.Generic;
 [ExecuteInEditMode]
 public class GraphicLineGenerator : MonoBehaviour
 {
-    string formula = "x";
-    public string Formula
-    {
-        get
-        {
-            return formula;
-        }
-
-        set
-        {
-            try
-            {
-                formula = value;
-                oldPoints = points;
-                newPoints = vector.getVect(formula);
-                StartCoroutine(LerpGraph());
-            }
-            catch { }
-        }
-    }
+    string expression = "x";
     LineRenderer lineRenderer;
     [Range(0.0f, 1.0f)]
     public float bold = 0.2f;
-    getVector vector;
     List<Vector2> points;
 
     public float lerpTime = 0.5f;
@@ -39,10 +19,8 @@ public class GraphicLineGenerator : MonoBehaviour
 
     void Awake()
     {
-        vector = (getVector)gameObject.AddComponent<getVector>();
         lineRenderer = GetComponent<LineRenderer>();
         edgeCollider = GetComponent<EdgeCollider2D>();
-        points = vector.getVect(formula);
     }
 
     IEnumerator LerpGraph()
@@ -61,7 +39,7 @@ public class GraphicLineGenerator : MonoBehaviour
 
     void SetGraphicLine(List<Vector2> points)
     {
-        lineRenderer.SetVertexCount(points.Count);
+        lineRenderer.numPositions = points.Count;
 
         for (int i = 0; i < points.Count; i++)
         {

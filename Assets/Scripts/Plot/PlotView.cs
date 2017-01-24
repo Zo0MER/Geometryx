@@ -4,38 +4,57 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-[RequireComponent(typeof(LineRenderer))]
 public class PlotView : MonoBehaviour
 {
+    [SerializeField] private GameObject _lineGO;
 
-    LineRenderer lineRenderer;
-    private EdgeCollider2D collider2D;
+    private List<GameObject> _linesGO = new List<GameObject>();
+    private List<EdgeCollider2D> _collider2D;
 
-    // Use this for initialization
     void Awake()
     {
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetVertexCount(0);
-
-        collider2D = GetComponent<EdgeCollider2D>();
+        //_collider2D = GetComponents<EdgeCollider2D>().ToList();
     }
 
-    public void SetGraphicLine(List<Vector3> points)
+    public void SetGraphicLine(List<List<Vector3>> lines)
     {
-
-        lineRenderer.SetVertexCount(points.Count);
-        lineRenderer.SetPositions(points.ToArray());
-
-        try
+        if (lines.Count > _linesGO.Count)
         {
-            List<Vector2> pointsVector2 = new List<Vector2>(points.Count);
-            pointsVector2.AddRange(points.Select(point => (Vector2)point));
-            collider2D.points = pointsVector2.ToArray();
+            var _linesGOCoount = _linesGO.Count;
+            for (int i = 0; i < lines.Count - _linesGOCoount; i++)
+            {
+                GameObject lineGO = Instantiate(_lineGO);
+                _linesGO.Add(lineGO);
+                lineGO.transform.parent = transform;
+            }
         }
-        catch (Exception)
+        else if (lines.Count < _linesGO.Count)
         {
-            collider2D.points = new Vector2[0];
+            for (int i = 0; i < lines.Count - _linesGO.Count; i++)
+            {
+                _linesGO[lines.Count + i].GetComponent<LineRenderer>().numPositions = 0;
+            }
         }
+
+        for (int i = 0; i < lines.Count; i++)
+        {
+            List<Vector3> line = lines[i];
+            var lineRenderer = _linesGO[i].GetComponent<LineRenderer>();
+            lineRenderer.numPositions = line.Count;
+            lineRenderer.SetPositions(line.ToArray());
+
+            //try
+            //{
+            //    List<Vector2> pointsVector2 = new List<Vector2>(lines.Count);
+            //    pointsVector2.AddRange(line.Select(point => (Vector2)point));
+            //    _collider2D.points = pointsVector2.ToArray();
+            //}
+            //catch (Exception)
+            //{
+            //    _collider2D.points = new Vector2[0];
+            //}
+        }
+
         
     }
 }
