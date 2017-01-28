@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Defines;
+using DG.Tweening;
 
 [RequireComponent(typeof(LayoutElement))]
 public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
@@ -57,18 +58,18 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
         if (currentState != SlotState.None)
             return;
         currentState = SlotState.ScalingUp;
-        var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, preferredWidth, width, scaleTime)
-            .setEase(LeanTweenType.easeOutCubic);
-        leen.onComplete += () => currentState = SlotState.None;
+        var tween = layout.DOPreferredSize(new Vector2(width, layout.preferredHeight), scaleTime);
+        tween.SetEase(Ease.OutCubic);
+        tween.OnComplete(() => currentState = SlotState.None);
     }
     public void ScaleBack()
     {
         if (currentState != SlotState.None)
             return;
         currentState = SlotState.ScalingBack;
-        var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, preferredWidth, scaleTime)
-            .setEase(LeanTweenType.easeOutCubic);
-        leen.onComplete += () => currentState = SlotState.None;
+        var tween = layout.DOPreferredSize(new Vector2(preferredWidth, layout.preferredHeight), scaleTime);
+        tween.SetEase(Ease.OutCubic);
+        tween.OnComplete(() => currentState = SlotState.None);
     }
 
     public bool IsEmpty()
@@ -79,7 +80,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
     void OnTokenDrop(GameObject token)
     {
         token.transform.SetParent(transform);
-        LeanTween.moveLocal(token, Vector3.zero, 0.1f);
+        token.transform.DOLocalMove(Vector3.zero, 0.1f);
 
         var expressionToken = token.GetComponent<ExpressionToken>();
         expressionToken.OnDroppedInSlot(this);
@@ -144,9 +145,9 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
             return;
 
         currentState = SlotState.Closing;
-        var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, layout.preferredWidth, 0, closeScaleTime)
-            .setEase(LeanTweenType.easeOutCubic);
-        leen.destroyOnComplete = true;
+        var tween = layout.DOPreferredSize(new Vector2(0, layout.preferredHeight), closeScaleTime);
+        tween.SetEase(Ease.OutCubic);
+        tween.OnComplete(() => Destroy(gameObject));
     }
 
     public void Open(float width)
@@ -156,18 +157,18 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ID
 
         currentState = SlotState.Opening;
         preferredWidth = width;
-        var leen = LeanTween.value(gameObject, (x) => layout.preferredWidth = x, 0, width, openScaleTime)
-            .setEase(LeanTweenType.easeOutCubic);
-        leen.onComplete += () => currentState = SlotState.None;
-
-        leen.onComplete += () =>
+        layout.preferredWidth = 0.0f;
+        var tween = layout.DOPreferredSize(new Vector2(width, layout.preferredHeight), openScaleTime);
+        tween.SetEase(Ease.OutCubic);
+        tween.OnComplete(() =>
         {
+            currentState = SlotState.None;
             if (!IsEmpty())
             {
                 var token = GetComponentInChildren<ExpressionToken>();
-                LeanTween.moveLocal(token.gameObject, Vector3.zero, 0.1f);
+                token.transform.DOLocalMove(Vector3.zero, 0.1f);
             }
-        };
+        });
     }
 
 

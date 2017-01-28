@@ -48,5 +48,4 @@ public class GraphicLineGenerator : MonoBehaviour
 
         edgeCollider.points = points.ToArray();
     }
-
 }

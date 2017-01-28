@@ -9,7 +9,9 @@ public class PlotView : MonoBehaviour
     [SerializeField] private GameObject _lineGO;
 
     private List<GameObject> _linesGO = new List<GameObject>();
-    private List<EdgeCollider2D> _collider2D;
+    private List<List<Vector3>> _lines = new List<List<Vector3>>();
+
+    private bool _updateLineCollider = false;
 
     void Awake()
     {
@@ -18,6 +20,7 @@ public class PlotView : MonoBehaviour
 
     public void SetGraphicLine(List<List<Vector3>> lines)
     {
+        _lines = lines;
         if (lines.Count > _linesGO.Count)
         {
             var _linesGOCoount = _linesGO.Count;
@@ -42,19 +45,31 @@ public class PlotView : MonoBehaviour
             var lineRenderer = _linesGO[i].GetComponent<LineRenderer>();
             lineRenderer.numPositions = line.Count;
             lineRenderer.SetPositions(line.ToArray());
-
-            //try
-            //{
-            //    List<Vector2> pointsVector2 = new List<Vector2>(lines.Count);
-            //    pointsVector2.AddRange(line.Select(point => (Vector2)point));
-            //    _collider2D.points = pointsVector2.ToArray();
-            //}
-            //catch (Exception)
-            //{
-            //    _collider2D.points = new Vector2[0];
-            //}
         }
 
-        
+        _updateLineCollider = true;
+    }
+
+    void FixedUpdate()
+    {
+        if (!_updateLineCollider) return;
+
+        _updateLineCollider = false;
+
+        for (int i = 0; i < _lines.Count; i++)
+        {
+            List<Vector3> line = _lines[i];
+            var lineCollider = _linesGO[i].GetComponent<EdgeCollider2D>();
+            try
+            {
+                List<Vector2> pointsVector2 = new List<Vector2>(_lines.Count);
+                pointsVector2.AddRange(line.Select(point => (Vector2)point));
+                lineCollider.points = pointsVector2.ToArray();
+            }
+            catch (Exception)
+            {
+                lineCollider.points = new Vector2[0];
+            }
+        }
     }
 }

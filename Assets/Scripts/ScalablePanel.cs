@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 [RequireComponent(typeof(RectTransform))]
 public class ScalablePanel : MonoBehaviour
@@ -9,8 +10,8 @@ public class ScalablePanel : MonoBehaviour
 
     Vector2 initalSize;
     public Vector2 closedSize = Vector2.zero;
-    public LeanTweenType openEasing;
-    public LeanTweenType closeEasing;
+    public Ease openEasing;
+    public Ease closeEasing;
 
     private bool isOpen = true;
 
@@ -28,18 +29,12 @@ public class ScalablePanel : MonoBehaviour
 	public void Close()
 	{
 	    isOpen = false;
-        //LeanTween.value(gameObject, (x) => rectTransform.sizeDelta = x, initalSize, closedSize, closeTime)
-        //   .setEase(closeEasing);
-        LeanTween.scale(gameObject, Vector2.zero, closeTime).setEase(closeEasing);
+	    transform.DOScale(Vector2.zero, closeTime).SetEase(closeEasing);
 	}
 
     public void Open()
     {
         isOpen = true;
-        //LeanTween.value(gameObject, (x) => rectTransform.sizeDelta = x, closedSize, initalSize, closeTime)
-        //   .setEase(openEasing);
-
-        LeanTween.scale(gameObject, Vector2.one, closeTime).setEase(openEasing);
-
+        transform.DOScale(Vector2.one, closeTime).SetEase(openEasing);
     }
 }

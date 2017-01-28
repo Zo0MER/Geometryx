@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
+using DG.Tweening;
 using UnityEditor;
 
 [RequireComponent(typeof(CanvasGroup))]
@@ -22,7 +23,7 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public Defines.OperandType operandType;
 
-    public StockPanel stockPanel;
+    public GameObject stockPanel;
 
     private LayoutElement layout;
     private RectTransform rectTransform;
@@ -32,7 +33,7 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         canvasGroup = GetComponent<CanvasGroup>();
         label = GetComponentInChildren<Text>();
         layout = GetComponent<LayoutElement>();
-        stockPanel = FindObjectOfType<StockPanel>();
+        stockPanel = GameObject.FindGameObjectWithTag("StockPanel");
         rectTransform = GetComponent<RectTransform>();
     }
 
@@ -44,12 +45,8 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         transform.SetParent(FindObjectOfType<Canvas>().transform);
 
         float currentSize = layout.preferredWidth;
-        var leen = LeanTween.value(gameObject, (x) =>
-        {
-            transform.localScale = new Vector2(x, x);
-        },
-            1, 1.1f, 0.2f);
-        leen.setEase(LeanTweenType.easeOutElastic);
+        transform.localScale = Vector3.one;
+        transform.DOScale(new Vector2(1.1f, 1.1f), 0.2f).SetEase(Ease.OutElastic);
 
         OnTokenChanged = null;
 
@@ -66,12 +63,8 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        var leen = LeanTween.value(gameObject, (x) =>
-        {
-            transform.localScale = new Vector2(x, x);
-        },
-            1.1f, 1, 0.2f);
-        leen.setEase(LeanTweenType.easeOutElastic);
+        transform.localScale = new Vector2(1.1f, 1.1f);
+        transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutElastic);
 
         itemBeginDraged = null;
         canvasGroup.blocksRaycasts = true;
@@ -84,20 +77,15 @@ public class ExpressionToken : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public virtual void MoveInStock()
     {
         float currentSize = layout.preferredWidth;
-        var leen = LeanTween.value(gameObject, (x) =>
-        {
-            transform.localScale = new Vector2(x, x);
-        },
-            1, 0.0f, 0.2f);
-        leen.onComplete += () => transform.SetParent(stockPanel.transform);
-        leen = LeanTween.value(gameObject, (x) =>
-        {
-            transform.localScale = new Vector2(x, x);
-            layout.preferredWidth = x * currentSize;
-        },
-            0.0f, 1, 0.5f);
-        leen.delay = 0.2f;
-        leen.setEase(LeanTweenType.easeOutElastic);
+        transform.localScale = Vector3.one;
+        var tween = transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.OutElastic);
+        tween.OnComplete(() => transform.SetParent(stockPanel.transform));
+        tween = transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutElastic);
+        tween.SetDelay(0.2f);
+        layout.preferredWidth = 0.0f;
+        layout.DOPreferredSize(new Vector2(currentSize, layout.preferredHeight), 0.5f);
+        tween.SetDelay(0.2f);
+        tween.SetEase(Ease.OutElastic);
     }
 
     void Update()

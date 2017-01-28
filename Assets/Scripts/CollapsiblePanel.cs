@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class CollapsiblePanel : MonoBehaviour {
 
     public void Hide()
     {
-        LeanTween.moveY(gameObject, -60, 0.2f).setEase(LeanTweenType.easeInQuad);
+        transform.DOMoveY(-60, 0.2f).SetEase(Ease.InQuad);
     }
 
     public void Unhide()
     {
-        LeanTween.moveY(gameObject, 0, 0.2f).setEase(LeanTweenType.easeInQuad);
+        transform.DOMoveY(0, 0.2f).SetEase(Ease.InQuad);
     }
 }
